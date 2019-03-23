@@ -1,0 +1,10 @@
+spring.profiles.active: test
+
+app:
+  envName: test
+
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://${SPRING_KOTLIN_MONGODB_DB_CI_HOST:localhost}27017/app_test

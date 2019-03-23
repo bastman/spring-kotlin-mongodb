@@ -1,0 +1,9 @@
+spring.profiles.active: playground
+
+app:
+  envName: playground
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://${DB_URL}
