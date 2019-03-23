@@ -70,6 +70,9 @@ dependencies {
     implementation("io.springfox:springfox-swagger2:$swaggerVersion")
     implementation("io.springfox:springfox-swagger-ui:$swaggerVersion")
 
+    // db: spring-mongo
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
+
     // test: junit5
     val junitVersion = "5.3.1"
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
