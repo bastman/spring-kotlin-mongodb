@@ -1,0 +1,33 @@
+version: '3.4'
+services:
+  spring-kotlin-mongodb-playground-db:
+    image: local/spring-kotlin-mongodb-db:latest
+    ports:
+      - "27017:27017"
+    networks:
+      - spring-kotlin-mongodb-playground-network
+    volumes:
+      - spring-kotlin-mongodb-playground-db-volume:/var/lib/postgresql/data
+
+  spring-kotlin-mongodb-playground-web:
+    image: local/spring-kotlin-mongodb-rest-api:${SERVICE_VERSION}
+    ports:
+      - "8080:8080"
+    networks:
+      - spring-kotlin-mongodb-playground-network
+    environment:
+      - "DB_URL=spring-kotlin-mongodb-playground-db:27017/app"
+    command: ["java","-jar","-Dspring.profiles.active=playground", "-Xms32m", "-Xmx256m", "/opt/app/app.jar"]
+    depends_on:
+      - spring-kotlin-mongodb-playground-db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  spring-kotlin-mongodb-playground-network: {}
+volumes:
+  spring-kotlin-mongodb-playground-db-volume: {}

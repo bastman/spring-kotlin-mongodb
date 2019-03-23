@@ -1,0 +1,15 @@
+version: '3'
+services:
+  spring-kotlin-mongodb-local-db:
+    image: local/spring-kotlin-mongodb-db:latest
+    ports:
+      - "27017:27017"
+    networks:
+      - spring-kotlin-mongodb-local-network
+    volumes:
+      - spring-kotlin-mongodb-local-db-volume:/var/lib/postgresql/data
+
+networks:
+  spring-kotlin-mongodb-local-network: {}
+volumes:
+  spring-kotlin-mongodb-local-db-volume: {}

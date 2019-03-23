@@ -1,0 +1,14 @@
+version: '3'
+services:
+  spring-kotlin-mongodb-db-ci:
+    image: local/spring-kotlin-mongodb-db:latest
+    ports:
+      - "27017:27017"
+    networks:
+      - spring-kotlin-mongodb-ci-network
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
+      - /var/lib/postgresql/data
+networks:
+  spring-kotlin-mongodb-ci-network: {}
