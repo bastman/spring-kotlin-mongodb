@@ -1,13 +1,12 @@
 package com.example.api.tweeter.rest
 
-import com.example.api.api.common.rest.error.EntityNotFoundException
 import com.example.api.tweeter.db.Tweet
 import com.example.api.tweeter.db.TweetRepo
+import com.example.api.tweeter.db.TweetService
+import com.example.api.tweeter.db.requireIsActive
 import com.example.api.tweeter.rest.common.response.TweetDto
 import com.example.api.tweeter.rest.common.response.toTweetDto
-import com.example.api.tweeter.rest.common.response.toValidityDto
 import mu.KLogging
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.web.bind.annotation.*
 import java.time.Instant
 import java.util.*
@@ -16,43 +15,56 @@ import java.util.*
 
 @RestController
 class TweeterApiController(
-        private val tweetRepo: TweetRepo
+        private val tweetRepo: TweetRepo,
+        private val tweetService: TweetService
 ) {
     companion object : KLogging()
 
-    @GetMapping("/api/tweeter/tweets/findAll")
-    fun findAll():List<TweetDto> = tweetRepo.findAll().toList().map { it.toTweetDto() }
-
-    @PutMapping("/api/tweeter/tweets")
-    fun insert(@RequestBody req: TweetCreateRequest):TweetDto = req
-            .toDocument(id = UUID.randomUUID(), now = Instant.now())
-            .let(tweetRepo::insert)
-            .toTweetDto()
-
     @GetMapping("/api/tweeter/tweets/{id}")
-    fun getById(@PathVariable id: UUID):TweetDto = tweetRepo
-            .findByIdOrNull(id = id)
-            .requireExists(id = id)
+    fun getById(@PathVariable id: UUID): TweetDto = tweetService
+            .getById(id = id)
             .requireIsActive()
             .toTweetDto()
+
+    @PutMapping("/api/tweeter/tweets")
+    fun insert(@RequestBody payload: TweetCreatePayload): TweetDto = payload
+            .toDocument(id = UUID.randomUUID(), now = Instant.now())
+            .let(tweetService::insert)
+            .toTweetDto()
+
+    @PostMapping("/api/tweeter/tweets/{id}")
+    fun update(
+            @PathVariable id: UUID,
+            @RequestBody payload: TweetCreatePayload
+    ): TweetDto = tweetService
+            .getById(id = id)
+            .requireIsActive()
+            .copy(message = payload.message, modifiedAt = Instant.now())
+            .let(tweetService::update)
+            .toTweetDto()
+
+    @DeleteMapping("/api/tweeter/tweets/{id}")
+    fun softDelete(
+            @PathVariable id: UUID,
+            @RequestBody payload: TweetUpdatePayload
+    ): TweetDto = tweetService
+            .getById(id = id)
+            .requireIsActive()
+            .copy(isActive = false, deletedAt = Instant.now())
+            .let(tweetRepo::save)
+            .toTweetDto()
+
+    @GetMapping("/api/tweeter/tweets/findAll")
+    fun findAll(): List<TweetDto> = tweetRepo.findAll().toList().map { it.toTweetDto() }
+
 }
 
+data class TweetCreatePayload(val message: String)
+data class TweetUpdatePayload(val message: String)
 
-data class TweetCreateRequest(val message: String)
-
-fun TweetCreateRequest.toDocument(id: UUID, now: Instant): Tweet =
+fun TweetCreatePayload.toDocument(id: UUID, now: Instant): Tweet =
         Tweet(id = id, createdAt = now, modifiedAt = now, deletedAt = null, isActive = true, message = message)
 
-fun Tweet?.requireExists(id: UUID): Tweet =
-        when (this) {
-            null -> throw EntityNotFoundException("Not Found! document(collection: Tweet, id: $id")
-            else -> this
-        }
 
-fun Tweet.requireIsActive(): Tweet =
-        when (isActive) {
-            true -> this
-            false -> throw EntityNotFoundException(
-                    "Not Found! document(collection: Tweet, id: $id) - soft deleted. validity: ${this.toValidityDto()}"
-            )
-        }
+
+
