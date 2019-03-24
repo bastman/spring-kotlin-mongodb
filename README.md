@@ -1,5 +1,5 @@
 # spring-kotlin-mongodb
-poc
+poc: a simple playground for kotlin, spring-boot, spring-data-mongo, docker, docker-compose
 
 ## findings: spring-data
 
