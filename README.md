@@ -60,11 +60,23 @@ repo.save() -> does an UPSERT !
 
 ```
     # db-local
-    $ make -C rest-api db-local.up
     
+    # start
+    $ make -C rest-api db-local.up
+    # stop
+    $ make -C rest-api db-local.down
+    # stop and remove volumes
+    $ make -C rest-api db-local.down.v
+            
     # db-ci (to be used for gradle test)
+    
+    # start
     $ make -C rest-api db-ci.up
+    # stop db and remove volumes
+    $ make -C rest-api db-ci.down.v
 
 ```
+
+
 
 
