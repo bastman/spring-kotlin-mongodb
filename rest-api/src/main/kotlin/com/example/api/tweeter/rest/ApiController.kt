@@ -3,6 +3,7 @@ package com.example.api.tweeter.rest
 import com.example.api.api.common.rest.error.EntityNotFoundException
 import com.example.api.tweeter.db.Tweet
 import com.example.api.tweeter.db.TweetRepo
+import com.example.api.tweeter.rest.common.response.TweetDto
 import com.example.api.tweeter.rest.common.response.toTweetDto
 import com.example.api.tweeter.rest.common.response.toValidityDto
 import mu.KLogging
@@ -20,16 +21,16 @@ class TweeterApiController(
     companion object : KLogging()
 
     @GetMapping("/api/tweeter/tweets/findAll")
-    fun findAll() = tweetRepo.findAll().toList().map { it.toTweetDto() }
+    fun findAll():List<TweetDto> = tweetRepo.findAll().toList().map { it.toTweetDto() }
 
     @PutMapping("/api/tweeter/tweets")
-    fun insert(@RequestBody req: TweetCreateRequest) = req
+    fun insert(@RequestBody req: TweetCreateRequest):TweetDto = req
             .toDocument(id = UUID.randomUUID(), now = Instant.now())
             .let(tweetRepo::insert)
             .toTweetDto()
 
     @GetMapping("/api/tweeter/tweets/{id}")
-    fun getById(@PathVariable id: UUID) = tweetRepo
+    fun getById(@PathVariable id: UUID):TweetDto = tweetRepo
             .findByIdOrNull(id = id)
             .requireExists(id = id)
             .requireIsActive()
