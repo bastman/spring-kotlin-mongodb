@@ -1,10 +1,10 @@
 package com.example.api.tweeter.db
 
 import com.example.api.api.common.rest.error.EntityNotFoundException
+import com.example.testutils.assertions.shouldEqualRecursively
 import com.example.testutils.spring.BootWebMockMvcTest
 import com.example.util.mongo.updateById
 import org.amshove.kluent.shouldBe
-import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldNotEqual
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -31,7 +31,7 @@ class TweetsRepoTest(
 
     @Test
     fun `repo - crud ops - should work`() {
-        val now = Instant.now().truncatedTo(ChronoUnit.MILLIS)
+        val now = Instant.now()//.truncatedTo(ChronoUnit.MILLIS)
         val docId = UUID.randomUUID()
         val docNew = Tweet(
                 id = docId,
@@ -45,13 +45,13 @@ class TweetsRepoTest(
         repo.findByIdOrNull(id = docId) shouldBe null
         // insert
         val docInserted = repo.insert(docNew)
-        docInserted shouldEqual docNew
+        docInserted shouldEqualRecursively docNew
         // inserted. reload ...
         val docLoaded = repo
                 .findByIdOrNull(docId)
                 .also {
-                    it shouldEqual docInserted
-                    it shouldEqual docNew
+                    it shouldEqualRecursively docInserted
+                    it shouldEqualRecursively docNew
                 }!!
 
         // insert again ...
@@ -66,7 +66,7 @@ class TweetsRepoTest(
         )
         val docUpdated = repo.updateById(id = docId, entity = docToBeUpdated)
                 .also {
-                    it shouldEqual docToBeUpdated
+                    it shouldEqualRecursively docToBeUpdated
                     it shouldNotEqual docInserted
                     it shouldNotEqual docNew
                 }
@@ -74,8 +74,8 @@ class TweetsRepoTest(
         repo
                 .findByIdOrNull(docId)
                 .also {
-                    it shouldEqual docToBeUpdated
-                    it shouldEqual docUpdated
+                    it shouldEqualRecursively docToBeUpdated
+                    it shouldEqualRecursively docUpdated
                     it shouldNotEqual docInserted
                     it shouldNotEqual docNew
                 }!!
