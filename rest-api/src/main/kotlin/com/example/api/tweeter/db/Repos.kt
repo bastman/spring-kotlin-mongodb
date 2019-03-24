@@ -14,21 +14,22 @@ interface TweetRepo : MongoRepository<Tweet, UUID>
 class TweetService(private val repo: TweetRepo) {
     companion object : KLogging()
 
-    fun existsById(id:UUID):Boolean=repo.existsById(id)
-    fun requireExistsById(id:UUID) {
-        if(!existsById(id)) {
+    fun existsById(id: UUID): Boolean = repo.existsById(id)
+    fun requireExistsById(id: UUID) {
+        if (!existsById(id)) {
             throw EntityNotFoundException("Not Found! document(collection: Tweet, id: $id")
         }
     }
 
-    fun insert(tweet:Tweet):Tweet = repo
+    fun insert(tweet: Tweet): Tweet = repo
             .insert(tweet)
             .also { logger.info { "DB: Insert Tweet: $tweet" } }
 
-    fun update(tweet:Tweet):Tweet {
-        requireExistsById(id=tweet.id)
-        return repo.save(tweet)
-            .also { logger.info { "DB: UPDATE Tweet: $tweet" } }
+    fun update(tweet: Tweet): Tweet {
+        requireExistsById(id = tweet.id)
+        return repo
+                .save(tweet)
+                .also { logger.info { "DB: UPDATE Tweet: $tweet" } }
     }
 
     fun findById(id: UUID): Tweet? = repo.findByIdOrNull(id = id)
