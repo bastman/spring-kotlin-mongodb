@@ -1,11 +1,11 @@
 package com.example.api.tweeter.rest
 
 import com.example.api.api.common.rest.error.EntityNotFoundException
-import com.example.api.tweeter.db.BookRepo
 import com.example.api.tweeter.db.Tweet
 import com.example.api.tweeter.db.TweetRepo
+import com.example.api.tweeter.rest.common.response.toTweetDto
+import com.example.api.tweeter.rest.common.response.toValidityDto
 import mu.KLogging
-import org.springframework.data.annotation.Id
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.web.bind.annotation.*
 import java.time.Instant
@@ -20,20 +20,38 @@ class TweeterApiController(
     companion object : KLogging()
 
     @GetMapping("/api/tweeter/tweets/findAll")
-    fun findAll() = tweetRepo.findAll().toList()
+    fun findAll() = tweetRepo.findAll().toList().map { it.toTweetDto() }
 
     @PutMapping("/api/tweeter/tweets")
     fun insert(@RequestBody req: TweetCreateRequest) = req
-            .toDocument(id= UUID.randomUUID(), now = Instant.now())
+            .toDocument(id = UUID.randomUUID(), now = Instant.now())
             .let(tweetRepo::insert)
+            .toTweetDto()
 
     @GetMapping("/api/tweeter/tweets/{id}")
     fun getById(@PathVariable id: UUID) = tweetRepo
-            .findByIdOrNull(id=id)
-            ?: throw EntityNotFoundException("Not Found! document(collection: Tweet, id: $id")
+            .findByIdOrNull(id = id)
+            .requireExists(id = id)
+            .requireIsActive()
+            .toTweetDto()
 }
 
 
-data class TweetCreateRequest(val message:String)
-fun TweetCreateRequest.toDocument(id:UUID, now: Instant): Tweet =
-        Tweet(id= id, createdAt = now, modifiedAt = now, deletedAt = null, isActive = true, message = message)
+data class TweetCreateRequest(val message: String)
+
+fun TweetCreateRequest.toDocument(id: UUID, now: Instant): Tweet =
+        Tweet(id = id, createdAt = now, modifiedAt = now, deletedAt = null, isActive = true, message = message)
+
+fun Tweet?.requireExists(id: UUID): Tweet =
+        when (this) {
+            null -> throw EntityNotFoundException("Not Found! document(collection: Tweet, id: $id")
+            else -> this
+        }
+
+fun Tweet.requireIsActive(): Tweet =
+        when (isActive) {
+            true -> this
+            false -> throw EntityNotFoundException(
+                    "Not Found! document(collection: Tweet, id: $id) - soft deleted. validity: ${this.toValidityDto()}"
+            )
+        }
