@@ -35,7 +35,7 @@ class TweeterApiController(
     @PostMapping("/api/tweeter/tweets/{id}")
     fun update(
             @PathVariable id: UUID,
-            @RequestBody payload: TweetCreatePayload
+            @RequestBody payload: TweetUpdatePayload
     ): TweetDto = tweetService
             .getById(id = id)
             .requireIsActive()
@@ -44,10 +44,7 @@ class TweeterApiController(
             .toTweetDto()
 
     @DeleteMapping("/api/tweeter/tweets/{id}")
-    fun softDelete(
-            @PathVariable id: UUID,
-            @RequestBody payload: TweetUpdatePayload
-    ): TweetDto = tweetService
+    fun softDelete(@PathVariable id: UUID): TweetDto = tweetService
             .getById(id = id)
             .requireIsActive()
             .copy(isActive = false, deletedAt = Instant.now())
