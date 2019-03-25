@@ -39,7 +39,11 @@ class TweeterApiController(
     ): TweetDto = tweetService
             .getById(id = id)
             .requireIsActive()
-            .copy(message = payload.message, modifiedAt = Instant.now())
+            .copy(
+                    modifiedAt = Instant.now(),
+                    message = payload.message,
+                    comment = payload.comment
+            )
             .let(tweetService::update)
             .toTweetDto()
 
@@ -48,7 +52,14 @@ class TweeterApiController(
             .getById(id = id)
             .requireIsActive()
             .copy(isActive = false, deletedAt = Instant.now())
-            .let(tweetRepo::save)
+            .let(tweetService::update)
+            .toTweetDto()
+
+    @PostMapping("/api/tweeter/tweets/{id}/restore")
+    fun softRestore(@PathVariable id: UUID): TweetDto = tweetService
+            .getById(id = id)
+            .copy(isActive = true, deletedAt = null)
+            .let(tweetService::update)
             .toTweetDto()
 
     @GetMapping("/api/tweeter/tweets/findAll")
@@ -57,10 +68,18 @@ class TweeterApiController(
 }
 
 data class TweetCreatePayload(val message: String)
-data class TweetUpdatePayload(val message: String)
+data class TweetUpdatePayload(val message: String, val comment: String)
 
 fun TweetCreatePayload.toDocument(id: UUID, now: Instant): Tweet =
-        Tweet(id = id, createdAt = now, modifiedAt = now, deletedAt = null, isActive = true, message = message)
+        Tweet(
+                id = id,
+                createdAt = now,
+                modifiedAt = now,
+                deletedAt = null,
+                isActive = true,
+                message = message,
+                comment = ""
+        )
 
 
 

@@ -11,7 +11,8 @@ data class TweetDto(
         val modifiedAt: Instant,
         val deletedAt: Instant?,
         val isActive: Boolean,
-        val message: String
+        val message: String,
+        val comment: String
 )
 
 fun Tweet.toTweetDto(): TweetDto = TweetDto(
@@ -20,7 +21,8 @@ fun Tweet.toTweetDto(): TweetDto = TweetDto(
         modifiedAt = modifiedAt,
         deletedAt = deletedAt,
         isActive = isActive,
-        message = message
+        message = message,
+        comment = comment
 )
 
 fun Tweet.toValidityDto(): ValidityDto = ValidityDto(isActive = isActive, deletedAt = deletedAt)

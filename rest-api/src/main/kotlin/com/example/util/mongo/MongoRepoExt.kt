@@ -2,7 +2,6 @@ package com.example.util.mongo
 
 import org.springframework.data.mongodb.repository.MongoRepository
 
-class MongoDocumentNotFoundException(message: String) : RuntimeException(message)
 
 inline fun <reified T, ID> MongoRepository<T, ID>.requireExistsById(
         id: ID, noinline mapError: (MongoDocumentNotFoundException) -> RuntimeException = { it }

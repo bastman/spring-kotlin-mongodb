@@ -39,6 +39,7 @@ class TweetsRepoTest(
                 modifiedAt = now,
                 deletedAt = null,
                 message = "msg-${UUID.randomUUID()}",
+                comment = "comment-${UUID.randomUUID()}",
                 isActive = true
         )
 
@@ -59,7 +60,8 @@ class TweetsRepoTest(
 
         // update ...
         val docToBeUpdated = docLoaded.copy(
-                message = "msg-modfied-${UUID.randomUUID()}",
+                message = "msg-modified-${UUID.randomUUID()}",
+                comment = "comment-modified-${UUID.randomUUID()}",
                 isActive = false,
                 modifiedAt = Instant.now().truncatedTo(ChronoUnit.MILLIS),
                 deletedAt = Instant.now().truncatedTo(ChronoUnit.MILLIS)

@@ -1,5 +1,6 @@
 package com.example.api.tweeter.db
 
+import com.example.util.mongo.MongoCrudDocument
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.Instant
@@ -12,5 +13,8 @@ data class Tweet(
         val modifiedAt: Instant,
         val deletedAt: Instant?,
         val isActive: Boolean,
-        val message: String
-)
+        val message: String,
+        val comment: String
+) : MongoCrudDocument {
+    override fun docId(): UUID = id
+}
