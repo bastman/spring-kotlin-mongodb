@@ -4,10 +4,11 @@ poc: a simple playground for kotlin, spring-boot, spring-data-mongo, docker, doc
 ## findings: spring-data
 
 - as usual: convenient, kind of magic.
-- a developer needs to know what repo.save() is actually doing
-- there is no repo.update(), just repo.save() - which behaves as "UPSERT"
+- Issue: repo.save() - what is it doing? -> UPSERT.
+    - a developer needs to know what repo.save() is actually doing
+    - there is no repo.update(), just repo.save() - which behaves as "UPSERT"
 
-- Another thing ... 
+- Issue: doc._class 
     - some how spring-data save's the qualified class name into a mongo doc (attribute: _class)
     - so, no idea what happens if you rename your class or move it into a different package
 
