@@ -11,6 +11,7 @@ poc: a simple playground for kotlin, spring-boot, spring-data-mongo, docker, doc
 - Issue: doc._class 
     - some how spring-data save's the qualified class name into a mongo doc (attribute: _class)
     - so, no idea what happens if you rename your class or move it into a different package
+    - see: https://stackoverflow.com/questions/23517977/spring-boot-mongodb-how-to-remove-the-class-column
 
 ### repo.insert
 
