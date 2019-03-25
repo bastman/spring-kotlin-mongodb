@@ -1,7 +1,6 @@
 package com.example.api.tweeter.rest
 
 import com.example.api.tweeter.db.Tweet
-import com.example.api.tweeter.db.TweetRepo
 import com.example.api.tweeter.db.TweetService
 import com.example.api.tweeter.db.requireIsActive
 import com.example.api.tweeter.rest.common.response.TweetDto
@@ -11,11 +10,9 @@ import org.springframework.web.bind.annotation.*
 import java.time.Instant
 import java.util.*
 
-// see: https://github.com/MarianoLopez/MySpringTutorial/blob/master/01-%20book-backend%20basic/src/main/kotlin/com/z/bookbackend/services/AuthorService.kt
 
 @RestController
 class TweeterApiController(
-        private val tweetRepo: TweetRepo,
         private val tweetService: TweetService
 ) {
     companion object : KLogging()
@@ -63,7 +60,9 @@ class TweeterApiController(
             .toTweetDto()
 
     @GetMapping("/api/tweeter/tweets/findAll")
-    fun findAll(): List<TweetDto> = tweetRepo.findAll().toList().map { it.toTweetDto() }
+    fun findAll(): List<TweetDto> = tweetService
+            .findAll()
+            .map { it.toTweetDto() }
 
 }
 

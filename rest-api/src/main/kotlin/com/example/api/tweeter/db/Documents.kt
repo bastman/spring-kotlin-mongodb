@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 import java.time.Instant
 import java.util.*
 
-@Document
+@Document(collection = MongoCollectionNames.TWEETS)
 data class Tweet(
         @Id val id: UUID,
         val createdAt: Instant,

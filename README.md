@@ -78,5 +78,11 @@ repo.save() -> does an UPSERT !
 ```
 
 
+## inspired by
+
+- spring-data: https://github.com/MarianoLopez/MySpringTutorial/blob/master/01-%20book-backend%20basic/src/main/kotlin/com/z/bookbackend/services/AuthorService.kt
+- mongo-template: http://appsdeveloperblog.com/spring-boot-and-mongotemplate-tutorial-with-mongodb/
+
+
 
 

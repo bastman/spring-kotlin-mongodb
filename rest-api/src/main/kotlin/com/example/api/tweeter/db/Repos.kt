@@ -7,6 +7,9 @@ import com.example.util.mongo.requireExistsById
 import com.example.util.mongo.update
 import com.example.util.mongo.upsert
 import mu.KLogging
+import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.query.Criteria
+import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.*
@@ -15,7 +18,10 @@ import java.util.*
 interface TweetRepo : MongoCrudRepo<Tweet>
 
 @Component
-class TweetService(private val repo: TweetRepo) {
+class TweetService(
+        private val repo: TweetRepo,
+        private val mongo: MongoTemplate
+) {
     companion object : KLogging()
 
     fun existsById(id: UUID): Boolean = repo.existsById(id)
@@ -38,6 +44,16 @@ class TweetService(private val repo: TweetRepo) {
 
     fun getById(id: UUID): Tweet = findById(id = id)
             .requireExists(id = id)
+
+    fun findAll(): List<Tweet> {
+        val query = Query()
+                .apply {
+                    addCriteria(Criteria.where("isActive").`is`(true))
+                }
+        return mongo.find(query, Tweet::class.java)
+                .toList()
+                .filterNotNull()
+    }
 
 }
 
