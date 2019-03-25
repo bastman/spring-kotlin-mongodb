@@ -48,7 +48,7 @@ class TweetService(
     fun findAll(): List<Tweet> {
         val query = Query()
                 .apply {
-                    addCriteria(Criteria.where("isActive").`is`(true))
+                    addCriteria(Criteria.where(Tweet::isActive.name).`is`(true))
                 }
         return mongo.find(query, Tweet::class.java)
                 .toList()

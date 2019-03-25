@@ -8,6 +8,9 @@ spring:
 logging:
   level:
     org.springframework.web.servlet: INFO
+    org.springframework.data.mongodb.core:
+      ReactiveMongoTemplate: DEBUG
+      MongoTemplate: DEBUG
 
 app:
   appName: "spring-kotlin-mongodb"
