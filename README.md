@@ -7,6 +7,10 @@ poc: a simple playground for kotlin, spring-boot, spring-data-mongo, docker, doc
 - a developer needs to know what repo.save() is actually doing
 - there is no repo.update(), just repo.save() - which behaves as "UPSERT"
 
+- Another thing ... 
+    - some how spring-data save's the qualified class name into a mongo doc (attribute: _class)
+    - so, no idea what happens if you rename your class or move it into a different package
+
 ### repo.insert
 
 works as expected
@@ -83,6 +87,8 @@ repo.save() -> does an UPSERT !
 - spring-data: https://github.com/MarianoLopez/MySpringTutorial/blob/master/01-%20book-backend%20basic/src/main/kotlin/com/z/bookbackend/services/AuthorService.kt
 - mongo-template: http://appsdeveloperblog.com/spring-boot-and-mongotemplate-tutorial-with-mongodb/
 
+## tools
 
+- mongo ui client: https://coderwall.com/p/fb5dgg/the-best-mongodb-gui-for-mac-os-x
 
-
+![Alt text](docs/screenshot_mongo_example.png?raw=true "screenshot")
